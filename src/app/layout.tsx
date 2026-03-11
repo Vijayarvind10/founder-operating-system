@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AgentStatusProvider, SystemStatus } from "@/components/agent-status";
+import { DemoModeBadge } from "@/components/demo-mode-badge";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -31,7 +32,7 @@ export default function RootLayout({
       >
         <AgentStatusProvider>
           <div className="flex min-h-screen bg-slate-50 text-slate-900">
-            <aside className="w-64 border-r border-slate-200 bg-white px-6 py-8">
+            <aside className="flex w-64 flex-col border-r border-slate-200 bg-white px-6 py-8">
               <div className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Founder OS
               </div>
@@ -64,6 +65,9 @@ export default function RootLayout({
                   Nudges
                 </Link>
               </nav>
+              <div className="mt-auto pt-10">
+                <DemoModeBadge />
+              </div>
             </aside>
             <div className="flex flex-1 flex-col">
               <main className="flex-1 px-10 py-10">{children}</main>

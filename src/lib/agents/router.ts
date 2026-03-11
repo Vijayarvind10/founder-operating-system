@@ -2,6 +2,9 @@
 // Takes a free-form user query, classifies it, and dispatches to the correct agent.
 // Every call — classification and agent execution — is fully traced via the
 // observability module and shipped to LangSmith when LANGSMITH_API_KEY is set.
+//
+// When ANTHROPIC_API_KEY is absent the router transparently delegates to the
+// Simulation Provider, which serves curated responses with a realistic delay.
 
 import { generateObject } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
@@ -22,6 +25,8 @@ import {
   NUDGING_SYSTEM_PROMPT,
 } from "./nudging";
 import { AgentTracer, lsCreateRun } from "@/lib/observability";
+import { isDemoMode } from "@/lib/demo-mode";
+import { getSimulatedResponse } from "./simulation-provider";
 
 export type AgentType = "company-health" | "people-coach" | "nudging";
 
@@ -110,6 +115,13 @@ async function classifyQuery(
 // ─── Main router ──────────────────────────────────────────────────────────────
 
 export async function routeQuery(query: string): Promise<RouterResult> {
+  // In Interactive Demo Mode, delegate to the Simulation Provider instead of
+  // calling the live AI API. All behaviour — routing, tool calls, responses —
+  // is authentically represented; only the underlying model call is replaced.
+  if (isDemoMode()) {
+    return getSimulatedResponse(query);
+  }
+
   // Create a root LangSmith run that parents both the classifier and agent runs
   const rootRunId = await lsCreateRun({
     name: "router",
