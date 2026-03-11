@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // No static export — Vercel AI SDK streaming and Prisma require a Node.js runtime.
 };
 
 export default nextConfig;

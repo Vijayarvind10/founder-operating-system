@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum NudgeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SENT
+  FAILED
+}
+
+enum NudgeChannel {
+  EMAIL
+  SLACK
+  TEAMS
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum InsightType {
+  BURNOUT_RISK
+  PERFORMANCE_DROP
+  ENGAGEMENT_LOW
+  ATTRITION_RISK
+}
+
+enum InsightSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model Nudge {
+  id             String       @id @default(cuid())
+  recipientName  String
+  recipientEmail String
+  channel        NudgeChannel
+  subject        String
+  body           String
+  scheduledFor   DateTime
+  status         NudgeStatus  @default(PENDING)
+  agentGenerated Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("nudges")
+}
+
+model EmployeeInsight {
+  id             String          @id @default(cuid())
+  employeeId     String
+  employeeName   String
+  team           String
+  insightType    InsightType
+  severity       InsightSeverity
+  summary        String
+  recommendation String
+  resolved       Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("employee_insights")
+}
+
+model SystemAlert {
+  id        String        @id @default(cuid())
+  source    String
+  title     String
+  detail    String
+  severity  AlertSeverity @default(INFO)
+  resolved  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("system_alerts")
+}

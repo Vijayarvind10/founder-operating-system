@@ -1,0 +1,128 @@
+"use client"
+
+import * as React from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import type { CompanyHealthSnapshot, Metric } from "@/lib/company-health"
+import { loadDemoData } from "@/app/actions/demo-data"
+import { useAgentStatus } from "@/components/agent-status"
+
+type DashboardClientProps = {
+  initialSnapshot: CompanyHealthSnapshot
+}
+
+function TrendIndicator({ trend }: { trend: Metric["trend"] }) {
+  if (trend === "up") {
+    return <span className="text-emerald-600">Up</span>
+  }
+  if (trend === "down") {
+    return <span className="text-rose-600">Down</span>
+  }
+  return <span className="text-slate-500">Flat</span>
+}
+
+export default function DashboardClient({
+  initialSnapshot,
+}: DashboardClientProps) {
+  const { setLastOperation } = useAgentStatus()
+  const [snapshot, setSnapshot] =
+    React.useState<CompanyHealthSnapshot>(initialSnapshot)
+  const [isPending, startTransition] = React.useTransition()
+  const deferredSnapshot = React.useDeferredValue(snapshot)
+
+  const handleLoadDemo = () => {
+    startTransition(async () => {
+      const result = await loadDemoData()
+      setSnapshot(result.snapshot)
+      setLastOperation(result.operation)
+    })
+  }
+
+  return (
+    <section className="flex flex-col gap-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+            Company Health
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold text-slate-900">
+            Dashboard
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-500">
+            Daily signal checks powered by the Company Health Agent.
+          </p>
+        </div>
+        <Button
+          onClick={handleLoadDemo}
+          disabled={isPending}
+          className="self-start"
+        >
+          {isPending ? "Loading Demo Data..." : "Load Demo Data"}
+        </Button>
+      </header>
+
+      <div className="grid gap-4 lg:grid-cols-4">
+        {deferredSnapshot.metrics.map((metric) => (
+          <Card key={metric.label}>
+            <CardHeader>
+              <CardDescription>{metric.label}</CardDescription>
+              <CardTitle className="text-2xl">{metric.value}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between text-xs text-slate-500">
+              <span>{metric.change}</span>
+              <TrendIndicator trend={metric.trend} />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Daily Briefing</CardTitle>
+            <CardDescription>
+              Drafted by the Company Health Agent for founder review.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-slate-600">
+            <p>{deferredSnapshot.briefing.summary}</p>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                Priority Focus
+              </p>
+              <ul className="mt-2 list-disc space-y-2 pl-5">
+                {deferredSnapshot.briefing.priorities.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Active Alerts</CardTitle>
+            <CardDescription>Items needing attention this week.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-slate-600">
+            {deferredSnapshot.alerts.map((alert) => (
+              <div
+                key={alert.title}
+                className="rounded-lg border border-slate-200 p-3"
+              >
+                <p className="font-semibold text-slate-900">{alert.title}</p>
+                <p className="mt-1 text-xs text-slate-500">{alert.detail}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </section>
+  )
+}
