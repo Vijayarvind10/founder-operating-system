@@ -4,23 +4,17 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AgentStatusProvider, SystemStatus } from "@/components/agent-status";
 import { DemoModeBadge } from "@/components/demo-mode-badge";
 import {
-  BrainCircuit,
+  Cpu,
   LayoutDashboard,
   Plug,
   Users,
   Bell,
+  MessageCircle,
 } from "lucide-react";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Cortex AI — AI Command Center for Founders",
@@ -30,6 +24,7 @@ export const metadata: Metadata = {
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/chat", label: "Ask AI", icon: MessageCircle },
   { href: "/connections", label: "Connections", icon: Plug },
   { href: "/teams", label: "Teams", icon: Users },
   { href: "/nudges", label: "Nudges", icon: Bell },
@@ -37,49 +32,46 @@ const navItems = [
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#09090f] text-white`}
       >
         <AgentStatusProvider>
-          <div className="flex min-h-screen bg-slate-50 text-slate-900">
-            {/* Sidebar */}
-            <aside className="flex w-64 flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 px-5 py-8 text-white shrink-0">
+          <div className="flex min-h-screen">
+            <aside className="flex w-60 shrink-0 flex-col border-r border-white/[0.06] bg-[#0d0d1a] px-4 py-7">
               {/* Logo */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/30">
-                  <BrainCircuit className="h-5 w-5 text-indigo-300" />
+              <div className="flex items-center gap-2.5 px-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20 ring-1 ring-indigo-500/30">
+                  <Cpu className="h-4 w-4 text-indigo-400" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold tracking-tight text-white">
+                  <div className="text-sm font-semibold text-white leading-none">
                     Cortex AI
                   </div>
-                  <div className="text-[10px] leading-none mt-0.5 text-indigo-300/70">
+                  <div className="text-[10px] text-indigo-400/60 leading-none mt-0.5">
                     AI Command Center
                   </div>
                 </div>
               </div>
 
-              {/* Agent status pill */}
-              <div className="mt-5 flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 ring-1 ring-white/10">
-                <span className="relative flex h-2 w-2 shrink-0">
+              {/* Active agents pill */}
+              <div className="mt-5 mx-2 flex items-center gap-2 rounded-lg bg-white/[0.05] px-3 py-2 ring-1 ring-white/[0.08]">
+                <span className="relative flex h-1.5 w-1.5 shrink-0">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 </span>
-                <span className="text-xs text-slate-300">3 agents active</span>
+                <span className="text-xs text-slate-400">3 agents active</span>
               </div>
 
               {/* Nav */}
-              <nav className="mt-8 flex flex-col gap-1 text-sm font-medium">
+              <nav className="mt-6 flex flex-col gap-0.5">
                 {navItems.map(({ href, label, icon: Icon }) => (
                   <Link
                     key={href}
                     href={href}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors duration-150"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-500 hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
                   >
                     <Icon className="h-4 w-4 shrink-0" />
                     {label}
@@ -87,19 +79,17 @@ export default function RootLayout({
                 ))}
               </nav>
 
-              {/* Footer */}
-              <div className="mt-auto pt-8 flex flex-col gap-3">
+              <div className="mt-auto pt-6 flex flex-col gap-3 px-2">
                 <DemoModeBadge />
-                <p className="text-[10px] text-slate-600 leading-relaxed">
-                  Company Health · People Coach · Nudging
+                <p className="text-[10px] text-slate-700 leading-relaxed">
+                  Health · Coach · Nudging
                 </p>
               </div>
             </aside>
 
-            {/* Main content */}
             <div className="flex flex-1 flex-col min-w-0">
               <main className="flex-1 px-10 py-10">{children}</main>
-              <footer className="border-t border-slate-200 bg-white px-10 py-4">
+              <footer className="border-t border-white/[0.06] px-10 py-3">
                 <SystemStatus />
               </footer>
             </div>
