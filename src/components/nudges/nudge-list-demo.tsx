@@ -73,18 +73,20 @@ function Toast({
 
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-white shadow-lg ${
-        message.type === "success"
-          ? "bg-[#0d0d1a] border border-white/[0.08]"
-          : "bg-rose-900/80 border border-rose-500/30"
-      }`}
+      className="flex items-center gap-3 rounded border px-4 py-3 text-sm"
+      style={{
+        backgroundColor: "#0f0f12",
+        borderColor: message.type === "success" ? "#065f46" : "#7f1d1d",
+        color: "#f0ede8",
+      }}
     >
       <span
-        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-          message.type === "success"
-            ? "bg-emerald-400 text-slate-900"
-            : "bg-rose-400 text-white"
-        }`}
+        className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
+        style={{
+          backgroundColor:
+            message.type === "success" ? "#34d399" : "#f87171",
+          color: "#07070a",
+        }}
       >
         {message.type === "success" ? "✓" : "✕"}
       </span>
@@ -116,36 +118,42 @@ function channelLabel(channel: "EMAIL" | "SLACK") {
   return channel === "EMAIL" ? "Email" : "Slack"
 }
 
-function channelBadgeClass(channel: "EMAIL" | "SLACK") {
-  if (channel === "SLACK")
-    return "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
-  return "bg-white/[0.05] border-white/[0.08] text-slate-400"
-}
-
 function StatusBadge({ status }: { status: DemoNudge["status"] }) {
   const map: Record<
     DemoNudge["status"],
-    { label: string; className: string }
+    { label: string; borderColor: string; bgColor: string; textColor: string }
   > = {
     PENDING: {
-      label: "Pending Approval",
-      className: "bg-amber-500/10 border-amber-500/20 text-amber-400",
+      label: "PENDING",
+      borderColor: "#92400e",
+      bgColor: "rgba(245,158,11,0.06)",
+      textColor: "#f59e0b",
     },
     APPROVED: {
-      label: "Approved",
-      className: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
+      label: "APPROVED",
+      borderColor: "#065f46",
+      bgColor: "rgba(52,211,153,0.06)",
+      textColor: "#34d399",
     },
     REJECTED: {
-      label: "Rejected",
-      className: "bg-rose-500/10 border-rose-500/20 text-rose-400",
+      label: "REJECTED",
+      borderColor: "#7f1d1d",
+      bgColor: "rgba(248,113,113,0.06)",
+      textColor: "#f87171",
     },
   }
-  const { label, className } = map[status]
+  const cfg = map[status]
   return (
     <span
-      className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${className}`}
+      className="rounded border px-2.5 py-0.5 text-[9px] font-medium"
+      style={{
+        borderColor: cfg.borderColor,
+        backgroundColor: cfg.bgColor,
+        color: cfg.textColor,
+        fontFamily: "var(--font-jetbrains-mono)",
+      }}
     >
-      {label}
+      {cfg.label}
     </span>
   )
 }
@@ -187,18 +195,32 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
 
   return (
     <div
-      className={`rounded-2xl bg-white/[0.04] border border-white/[0.07] transition-opacity ${
-        isTerminal ? "opacity-70" : ""
-      }`}
+      className="rounded border transition-opacity"
+      style={{
+        backgroundColor: "#0f0f12",
+        borderColor: "#1c1c20",
+        opacity: isTerminal ? 0.7 : 1,
+      }}
     >
       {/* Header */}
-      <div className="border-b border-white/[0.06] px-5 py-4">
+      <div
+        className="border-b px-5 py-4"
+        style={{ borderColor: "#1c1c20" }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-semibold text-white">{nudge.subject}</p>
-            <p className="text-xs text-slate-500">
+            <p
+              className="text-sm font-bold"
+              style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+            >
+              {nudge.subject}
+            </p>
+            <p
+              className="text-xs"
+              style={{ color: "#6b6b70" }}
+            >
               To:{" "}
-              <span className="font-medium text-slate-400">
+              <span style={{ color: "#f0ede8" }}>
                 {nudge.recipientName}
               </span>{" "}
               · {nudge.recipientEmail}
@@ -207,20 +229,40 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
 
           <div className="flex shrink-0 flex-wrap items-center gap-2">
             {nudge.agentGenerated && (
-              <span className="rounded-full bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
-                AI Generated
+              <span
+                className="rounded border px-2 py-0.5 text-[9px] font-medium"
+                style={{
+                  color: "#f59e0b",
+                  borderColor: "#92400e",
+                  backgroundColor: "rgba(245,158,11,0.06)",
+                  fontFamily: "var(--font-jetbrains-mono)",
+                }}
+              >
+                AI GENERATED
               </span>
             )}
             <span
-              className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${channelBadgeClass(nudge.channel)}`}
+              className="rounded border px-2.5 py-0.5 text-[9px] font-medium"
+              style={{
+                color: "#6b6b70",
+                borderColor: "#1c1c20",
+                backgroundColor: "#07070a",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
             >
-              {channelLabel(nudge.channel)}
+              {channelLabel(nudge.channel).toUpperCase()}
             </span>
             <StatusBadge status={nudge.status} />
           </div>
         </div>
 
-        <p className="mt-2 text-xs text-slate-600">
+        <p
+          className="mt-2 text-[10px]"
+          style={{
+            color: "#3a3a3f",
+            fontFamily: "var(--font-jetbrains-mono)",
+          }}
+        >
           Scheduled for {formatScheduled(nudge.scheduledFor)} · Nudging Agent
         </p>
       </div>
@@ -233,17 +275,34 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
             value={draftBody}
             onChange={(e) => setDraftBody(e.target.value)}
             rows={6}
-            className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-slate-300 outline-none focus:border-indigo-500/40 focus:bg-white/[0.06] transition-all"
+            className="w-full resize-none rounded border px-3 py-2.5 text-sm outline-none transition-all"
+            style={{
+              backgroundColor: "#07070a",
+              borderColor: "#1c1c20",
+              color: "#f0ede8",
+            }}
+            onFocus={(e) =>
+              (e.currentTarget.style.borderColor = "#f59e0b")
+            }
+            onBlur={(e) =>
+              (e.currentTarget.style.borderColor = "#1c1c20")
+            }
           />
         ) : (
-          <p className="text-sm leading-relaxed text-slate-400 whitespace-pre-wrap">
+          <p
+            className="text-sm leading-relaxed whitespace-pre-wrap"
+            style={{ color: "#6b6b70" }}
+          >
             {nudge.body}
           </p>
         )}
       </div>
 
       {/* Footer actions */}
-      <div className="border-t border-white/[0.06] px-5 py-3 flex items-center justify-end gap-2">
+      <div
+        className="border-t px-5 py-3 flex items-center justify-end gap-2"
+        style={{ borderColor: "#1c1c20" }}
+      >
         {editing ? (
           <>
             <button
@@ -251,7 +310,16 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
                 setDraftBody(nudge.body)
                 setEditing(false)
               }}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="flex items-center gap-1.5 rounded px-3 py-1.5 text-xs transition-colors"
+              style={{ color: "#6b6b70" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#f0ede8"
+                e.currentTarget.style.backgroundColor = "#1c1c20"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#6b6b70"
+                e.currentTarget.style.backgroundColor = "transparent"
+              }}
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -261,7 +329,18 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
                 onSave(nudge.id, draftBody)
                 setEditing(false)
               }}
-              className="flex items-center gap-1.5 rounded-lg bg-white/[0.08] px-3 py-1.5 text-xs text-white hover:bg-white/[0.12] transition-colors"
+              className="flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors"
+              style={{
+                borderColor: "#1c1c20",
+                backgroundColor: "#1c1c20",
+                color: "#f0ede8",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#2a2a30"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#1c1c20"
+              }}
             >
               <Check className="h-3.5 w-3.5" />
               Save
@@ -272,7 +351,18 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
             <button
               onClick={() => setEditing(true)}
               disabled={isTerminal}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs text-slate-500 hover:text-white hover:bg-white/[0.06] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 rounded px-3 py-1.5 text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ color: "#6b6b70" }}
+              onMouseEnter={(e) => {
+                if (!isTerminal) {
+                  e.currentTarget.style.color = "#f0ede8"
+                  e.currentTarget.style.backgroundColor = "#1c1c20"
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#6b6b70"
+                e.currentTarget.style.backgroundColor = "transparent"
+              }}
             >
               <Edit3 className="h-3.5 w-3.5" />
               Edit
@@ -280,7 +370,18 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
             <button
               onClick={() => onReject(nudge.id, nudge.recipientName)}
               disabled={nudge.status !== "PENDING"}
-              className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs text-slate-400 hover:border-rose-500/30 hover:text-rose-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ borderColor: "#1c1c20", color: "#6b6b70" }}
+              onMouseEnter={(e) => {
+                if (nudge.status === "PENDING") {
+                  e.currentTarget.style.borderColor = "#7f1d1d"
+                  e.currentTarget.style.color = "#f87171"
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#1c1c20"
+                e.currentTarget.style.color = "#6b6b70"
+              }}
             >
               <XCircle className="h-3.5 w-3.5" />
               Reject
@@ -288,11 +389,32 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
             <button
               onClick={() => onApprove(nudge.id, nudge.recipientName)}
               disabled={nudge.status !== "PENDING"}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              className="flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+              style={
                 nudge.status === "PENDING"
-                  ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30"
-                  : "bg-white/[0.05] border border-white/[0.06] text-slate-600 cursor-default"
-              } disabled:cursor-not-allowed`}
+                  ? {
+                      backgroundColor: "#f59e0b",
+                      borderColor: "#f59e0b",
+                      color: "#07070a",
+                    }
+                  : {
+                      backgroundColor: "#1c1c20",
+                      borderColor: "#1c1c20",
+                      color: "#3a3a3f",
+                    }
+              }
+              onMouseEnter={(e) => {
+                if (nudge.status === "PENDING") {
+                  e.currentTarget.style.backgroundColor = "#d97706"
+                  e.currentTarget.style.borderColor = "#d97706"
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (nudge.status === "PENDING") {
+                  e.currentTarget.style.backgroundColor = "#f59e0b"
+                  e.currentTarget.style.borderColor = "#f59e0b"
+                }
+              }}
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               {nudge.status === "APPROVED" ? "Approved" : "Approve"}
@@ -351,8 +473,15 @@ export function NudgeDemoList() {
     <>
       {pending.length > 0 && (
         <section className="flex flex-col gap-4">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
-            Pending Approval — {pending.length}
+          <h2
+            className="text-[9px]"
+            style={{
+              color: "#3a3a3f",
+              fontFamily: "var(--font-jetbrains-mono)",
+              letterSpacing: "0.15em",
+            }}
+          >
+            // PENDING APPROVAL — {pending.length}
           </h2>
           {pending.map((nudge) => (
             <NudgeCard
@@ -368,8 +497,15 @@ export function NudgeDemoList() {
 
       {actioned.length > 0 && (
         <section className="flex flex-col gap-4">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
-            Actioned — {actioned.length}
+          <h2
+            className="text-[9px]"
+            style={{
+              color: "#3a3a3f",
+              fontFamily: "var(--font-jetbrains-mono)",
+              letterSpacing: "0.15em",
+            }}
+          >
+            // ACTIONED — {actioned.length}
           </h2>
           {actioned.map((nudge) => (
             <NudgeCard
@@ -384,7 +520,10 @@ export function NudgeDemoList() {
       )}
 
       {nudges.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-white/[0.06] py-16 text-center text-sm text-slate-600">
+        <div
+          className="rounded border-dashed border py-16 text-center text-sm"
+          style={{ borderColor: "#1c1c20", color: "#3a3a3f" }}
+        >
           No nudge drafts available. The Nudging Agent will populate this list
           automatically.
         </div>

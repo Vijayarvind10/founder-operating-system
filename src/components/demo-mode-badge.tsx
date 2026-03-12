@@ -5,13 +5,25 @@ export function DemoModeBadge() {
   if (!isDemoMode()) return null;
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-indigo-400/20 bg-indigo-500/10 px-3 py-2">
-      <span className="relative flex h-2 w-2 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
+    <div
+      className="flex items-center gap-2 rounded border px-2.5 py-1.5"
+      style={{ borderColor: "#92400e", backgroundColor: "rgba(245,158,11,0.06)" }}
+    >
+      <span className="relative flex h-1.5 w-1.5 shrink-0">
+        <span
+          className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+          style={{ backgroundColor: "#f59e0b" }}
+        />
+        <span
+          className="relative inline-flex h-1.5 w-1.5 rounded-full"
+          style={{ backgroundColor: "#f59e0b" }}
+        />
       </span>
-      <span className="text-xs font-medium text-indigo-300 leading-none">
-        Demo Mode
+      <span
+        className="text-[9px] font-medium leading-none"
+        style={{ color: "#f59e0b", fontFamily: "var(--font-jetbrains-mono)" }}
+      >
+        DEMO MODE
       </span>
     </div>
   );

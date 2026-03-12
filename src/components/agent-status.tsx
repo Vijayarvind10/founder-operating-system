@@ -54,11 +54,14 @@ export function useAgentStatus() {
 export function SystemStatus() {
   const { lastOperation } = useAgentStatus()
   return (
-    <div className="flex items-center gap-4 text-xs text-slate-600">
-      <span className="font-semibold text-slate-500">System Status</span>
-      <span>Latency: {lastOperation.latencyMs}ms</span>
-      <span>Cost: ${lastOperation.costUsd.toFixed(3)}</span>
-      <span className="text-slate-700">Updated: {lastOperation.updatedAt}</span>
+    <div
+      className="flex items-center gap-4 text-[10px]"
+      style={{ fontFamily: "var(--font-jetbrains-mono)", color: "#3a3a3f" }}
+    >
+      <span style={{ color: "#6b6b70" }}>SYS</span>
+      <span>LAT: {lastOperation.latencyMs}ms</span>
+      <span>COST: ${lastOperation.costUsd.toFixed(3)}</span>
+      <span>{lastOperation.updatedAt}</span>
     </div>
   )
 }

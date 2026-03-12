@@ -3,7 +3,7 @@
 import * as React from "react"
 import {
   Send,
-  Cpu,
+  Terminal,
   ActivitySquare,
   HeartPulse,
   MessageSquare,
@@ -30,7 +30,7 @@ type Script = {
 const SCRIPTS: Record<string, Script> = {
   revenue: {
     agent: "Company Health Agent",
-    agentColor: "text-indigo-400",
+    agentColor: "#f59e0b",
     agentIcon: ActivitySquare,
     toolCalls: [
       {
@@ -48,7 +48,7 @@ const SCRIPTS: Record<string, Script> = {
   },
   team: {
     agent: "People Coach Agent",
-    agentColor: "text-rose-400",
+    agentColor: "#34d399",
     agentIcon: HeartPulse,
     toolCalls: [
       {
@@ -61,7 +61,7 @@ const SCRIPTS: Record<string, Script> = {
   },
   nudge: {
     agent: "Nudging Agent",
-    agentColor: "text-amber-400",
+    agentColor: "#f97316",
     agentIcon: MessageSquare,
     toolCalls: [
       {
@@ -120,21 +120,48 @@ function ToolCallBlock({ tc, visible }: { tc: ToolCall; visible: boolean }) {
   const [open, setOpen] = React.useState(false)
   if (!visible) return null
   return (
-    <div className="rounded-lg border border-white/[0.07] bg-white/[0.03] text-xs overflow-hidden">
+    <div
+      className="rounded border text-xs overflow-hidden"
+      style={{ backgroundColor: "#07070a", borderColor: "#1c1c20" }}
+    >
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2 px-3 py-2 hover:bg-white/[0.03] transition-colors text-left"
+        className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors"
+        style={{ color: "#6b6b70" }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "rgba(28,28,32,0.5)")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "transparent")
+        }
       >
-        <span className="font-mono text-indigo-300">{tc.name}</span>
-        <span className="text-slate-600 flex-1">{tc.desc}</span>
+        <span
+          className="font-mono"
+          style={{ color: "#f59e0b", fontFamily: "var(--font-jetbrains-mono)" }}
+        >
+          {tc.name}
+        </span>
+        <span
+          className="flex-1 text-[10px]"
+          style={{ color: "#3a3a3f", fontFamily: "var(--font-jetbrains-mono)" }}
+        >
+          {tc.desc}
+        </span>
         {open ? (
-          <ChevronDown className="h-3 w-3 text-slate-600 shrink-0" />
+          <ChevronDown className="h-3 w-3 shrink-0" style={{ color: "#3a3a3f" }} />
         ) : (
-          <ChevronRight className="h-3 w-3 text-slate-600 shrink-0" />
+          <ChevronRight className="h-3 w-3 shrink-0" style={{ color: "#3a3a3f" }} />
         )}
       </button>
       {open && (
-        <div className="border-t border-white/[0.06] px-3 py-2 text-slate-400 font-mono">
+        <div
+          className="border-t px-3 py-2 text-[10px]"
+          style={{
+            borderColor: "#1c1c20",
+            color: "#6b6b70",
+            fontFamily: "var(--font-jetbrains-mono)",
+          }}
+        >
           {tc.result}
         </div>
       )}
@@ -245,13 +272,22 @@ export function ChatInterface() {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-8 text-center">
             <div>
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 ring-1 ring-indigo-500/20 mx-auto mb-4">
-                <Cpu className="h-7 w-7 text-indigo-400" />
+              <div
+                className="flex h-14 w-14 items-center justify-center rounded mx-auto mb-4 border"
+                style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+              >
+                <Terminal className="h-7 w-7" style={{ color: "#f59e0b" }} />
               </div>
-              <h2 className="text-2xl font-semibold text-white">
+              <h2
+                className="text-2xl font-bold"
+                style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+              >
                 Ask your AI agents
               </h2>
-              <p className="mt-2 text-sm text-slate-500 max-w-sm">
+              <p
+                className="mt-2 text-sm max-w-sm"
+                style={{ color: "#6b6b70" }}
+              >
                 Three specialised agents are standing by — company health,
                 people coaching, and outreach drafting.
               </p>
@@ -261,7 +297,20 @@ export function ChatInterface() {
                 <button
                   key={s}
                   onClick={() => submit(s)}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white transition-colors text-left"
+                  className="rounded border px-4 py-3 text-sm text-left transition-colors"
+                  style={{
+                    borderColor: "#1c1c20",
+                    backgroundColor: "#0f0f12",
+                    color: "#6b6b70",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "#f59e0b"
+                    e.currentTarget.style.color = "#f0ede8"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#1c1c20"
+                    e.currentTarget.style.color = "#6b6b70"
+                  }}
                 >
                   {s}
                 </button>
@@ -273,7 +322,14 @@ export function ChatInterface() {
             if (msg.role === "user") {
               return (
                 <div key={i} className="flex justify-end">
-                  <div className="max-w-[75%] rounded-2xl rounded-tr-sm bg-indigo-500/20 border border-indigo-500/30 px-4 py-3 text-sm text-white">
+                  <div
+                    className="max-w-[75%] rounded px-4 py-3 text-sm border"
+                    style={{
+                      backgroundColor: "rgba(245,158,11,0.08)",
+                      borderColor: "#92400e",
+                      color: "#f0ede8",
+                    }}
+                  >
                     {msg.text}
                   </div>
                 </div>
@@ -285,15 +341,26 @@ export function ChatInterface() {
 
             return (
               <div key={i} className="flex gap-3 max-w-[85%]">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] ring-1 ring-white/[0.08] mt-0.5">
-                  <AgentIcon className={`h-4 w-4 ${script.agentColor}`} />
+                <div
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded border mt-0.5"
+                  style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+                >
+                  <AgentIcon
+                    className="h-4 w-4"
+                    style={{ color: script.agentColor }}
+                  />
                 </div>
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs font-semibold ${script.agentColor}`}
+                      className="text-[10px] font-medium"
+                      style={{
+                        color: script.agentColor,
+                        fontFamily: "var(--font-jetbrains-mono)",
+                        letterSpacing: "0.08em",
+                      }}
                     >
-                      {script.agent}
+                      {script.agent.toUpperCase()}
                     </span>
                   </div>
 
@@ -303,8 +370,11 @@ export function ChatInterface() {
                       {[0, 1, 2].map((d) => (
                         <span
                           key={d}
-                          className="h-1.5 w-1.5 rounded-full bg-slate-600 animate-bounce"
-                          style={{ animationDelay: `${d * 150}ms` }}
+                          className="h-1.5 w-1.5 rounded-full animate-bounce"
+                          style={{
+                            backgroundColor: "#f59e0b",
+                            animationDelay: `${d * 150}ms`,
+                          }}
                         />
                       ))}
                     </div>
@@ -321,10 +391,20 @@ export function ChatInterface() {
 
                   {/* Streamed response */}
                   {streamedText && (
-                    <div className="rounded-2xl rounded-tl-sm bg-white/[0.04] border border-white/[0.07] px-4 py-3.5 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+                    <div
+                      className="rounded border px-4 py-3.5 text-sm leading-relaxed whitespace-pre-wrap"
+                      style={{
+                        backgroundColor: "#0f0f12",
+                        borderColor: "#1c1c20",
+                        color: "#6b6b70",
+                      }}
+                    >
                       {streamedText}
                       {phase === "streaming" && (
-                        <span className="inline-block h-3.5 w-0.5 bg-indigo-400 ml-0.5 animate-pulse" />
+                        <span
+                          className="inline-block h-3.5 w-0.5 ml-0.5 animate-pulse"
+                          style={{ backgroundColor: "#f59e0b" }}
+                        />
                       )}
                     </div>
                   )}
@@ -338,20 +418,42 @@ export function ChatInterface() {
 
       {/* Input */}
       <form onSubmit={handleSubmit} className="mt-4">
-        <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 focus-within:border-indigo-500/40 focus-within:bg-white/[0.06] transition-all">
+        <div
+          className="flex items-center gap-3 rounded border px-4 py-3 transition-all"
+          style={{ borderColor: "#1c1c20", backgroundColor: "#0f0f12" }}
+          onFocusCapture={(e) =>
+            (e.currentTarget.style.borderColor = "#f59e0b")
+          }
+          onBlurCapture={(e) =>
+            (e.currentTarget.style.borderColor = "#1c1c20")
+          }
+        >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about revenue, team health, or draft a message…"
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-600 outline-none"
+            className="flex-1 bg-transparent text-sm outline-none"
+            style={{
+              color: "#f0ede8",
+            }}
             disabled={isProcessing}
           />
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            style={{ backgroundColor: "#f59e0b" }}
+            onMouseEnter={(e) => {
+              if (input.trim() && !isProcessing)
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                  "#d97706"
+            }}
+            onMouseLeave={(e) =>
+              ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                "#f59e0b")
+            }
           >
-            <Send className="h-3.5 w-3.5 text-white" />
+            <Send className="h-3.5 w-3.5" style={{ color: "#07070a" }} />
           </button>
         </div>
       </form>

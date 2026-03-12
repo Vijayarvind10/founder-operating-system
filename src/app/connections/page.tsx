@@ -1,3 +1,5 @@
+"use client"
+
 import { CheckCircle2, Circle, Github, Zap, BarChart3, MessageSquare } from "lucide-react"
 
 const CONNECTIONS = [
@@ -39,11 +41,23 @@ export default function ConnectionsPage() {
   return (
     <section className="flex flex-col gap-8">
       <header>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-600">
-          Integrations
+        <p
+          className="text-[10px] mb-1.5"
+          style={{
+            color: "#3a3a3f",
+            fontFamily: "var(--font-jetbrains-mono)",
+            letterSpacing: "0.15em",
+          }}
+        >
+          // INTEGRATIONS
         </p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Connections</h1>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <h1
+          className="text-3xl font-bold"
+          style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+        >
+          Connections
+        </h1>
+        <p className="mt-1.5 text-sm" style={{ color: "#6b6b70" }}>
           Data sources and services your AI agents connect to.
         </p>
       </header>
@@ -55,36 +69,68 @@ export default function ConnectionsPage() {
           return (
             <div
               key={conn.name}
-              className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-5"
+              className="rounded border p-5"
+              style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.08]">
-                    <Icon className="h-5 w-5 text-slate-300" />
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded border"
+                    style={{ backgroundColor: "#07070a", borderColor: "#1c1c20" }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: "#6b6b70" }} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">
+                    <p
+                      className="text-sm font-bold"
+                      style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+                    >
                       {conn.name}
                     </p>
-                    <p className="text-xs text-slate-500">{conn.description}</p>
+                    <p className="text-xs" style={{ color: "#6b6b70" }}>
+                      {conn.description}
+                    </p>
                   </div>
                 </div>
                 {connected ? (
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2
+                    className="h-5 w-5 shrink-0"
+                    style={{ color: "#34d399" }}
+                  />
                 ) : (
-                  <Circle className="h-5 w-5 text-slate-700 shrink-0" />
+                  <Circle
+                    className="h-5 w-5 shrink-0"
+                    style={{ color: "#3a3a3f" }}
+                  />
                 )}
               </div>
               <div className="mt-4 flex items-center justify-between">
                 <span
-                  className={`text-xs ${
-                    connected ? "text-slate-500" : "text-slate-700"
-                  }`}
+                  className="text-[10px]"
+                  style={{
+                    color: connected ? "#6b6b70" : "#3a3a3f",
+                    fontFamily: "var(--font-jetbrains-mono)",
+                  }}
                 >
                   {conn.meta}
                 </span>
                 {!connected && (
-                  <button className="rounded-lg bg-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-300 hover:bg-white/[0.12] transition-colors">
+                  <button
+                    className="rounded border px-3 py-1.5 text-xs font-medium transition-colors"
+                    style={{
+                      borderColor: "#f59e0b",
+                      color: "#f59e0b",
+                      backgroundColor: "rgba(245,158,11,0.06)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(245,158,11,0.12)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(245,158,11,0.06)"
+                    }}
+                  >
                     Connect
                   </button>
                 )}
@@ -93,7 +139,13 @@ export default function ConnectionsPage() {
                 {conn.usedBy.map((a) => (
                   <span
                     key={a}
-                    className="rounded-full bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10px] text-indigo-400"
+                    className="rounded border px-2 py-0.5 text-[10px]"
+                    style={{
+                      color: "#f59e0b",
+                      borderColor: "#92400e",
+                      backgroundColor: "rgba(245,158,11,0.06)",
+                      fontFamily: "var(--font-jetbrains-mono)",
+                    }}
                   >
                     {a}
                   </span>

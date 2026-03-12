@@ -1,3 +1,5 @@
+"use client"
+
 const TEAM = [
   {
     name: "Sarah Chen",
@@ -49,21 +51,36 @@ const TEAM = [
 const RISK_CONFIG = {
   high: {
     label: "High Risk",
-    dot: "bg-rose-500",
-    badge: "bg-rose-500/10 border-rose-500/20 text-rose-400",
-    bar: "bg-rose-500",
+    dotColor: "#f87171",
+    badgeBorder: "#7f1d1d",
+    badgeBg: "rgba(248,113,113,0.08)",
+    badgeText: "#f87171",
+    barColor: "#f87171",
+    avatarBg: "rgba(248,113,113,0.12)",
+    avatarText: "#f87171",
+    hoverBorder: "#7f1d1d",
   },
   medium: {
     label: "Medium Risk",
-    dot: "bg-amber-400",
-    badge: "bg-amber-500/10 border-amber-500/20 text-amber-400",
-    bar: "bg-amber-400",
+    dotColor: "#f97316",
+    badgeBorder: "#7c2d12",
+    badgeBg: "rgba(249,115,22,0.08)",
+    badgeText: "#f97316",
+    barColor: "#f97316",
+    avatarBg: "rgba(249,115,22,0.12)",
+    avatarText: "#f97316",
+    hoverBorder: "#7c2d12",
   },
   low: {
     label: "Healthy",
-    dot: "bg-emerald-400",
-    badge: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
-    bar: "bg-emerald-400",
+    dotColor: "#34d399",
+    badgeBorder: "#065f46",
+    badgeBg: "rgba(52,211,153,0.08)",
+    badgeText: "#34d399",
+    barColor: "#34d399",
+    avatarBg: "rgba(52,211,153,0.12)",
+    avatarText: "#34d399",
+    hoverBorder: "#065f46",
   },
 }
 
@@ -74,11 +91,23 @@ export default function TeamsPage() {
   return (
     <section className="flex flex-col gap-8">
       <header>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-600">
-          People Coach Agent
+        <p
+          className="text-[10px] mb-1.5"
+          style={{
+            color: "#3a3a3f",
+            fontFamily: "var(--font-jetbrains-mono)",
+            letterSpacing: "0.15em",
+          }}
+        >
+          // PEOPLE COACH AGENT
         </p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Team Health</h1>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <h1
+          className="text-3xl font-bold"
+          style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+        >
+          Team Health
+        </h1>
+        <p className="mt-1.5 text-sm" style={{ color: "#6b6b70" }}>
           AI-powered signals and coaching recommendations for your team.
         </p>
       </header>
@@ -86,26 +115,48 @@ export default function TeamsPage() {
       {/* Summary strip */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Team Members", value: TEAM.length.toString(), color: "text-white" },
           {
-            label: "Burnout Risk",
-            value: `${highRisk} high · ${medRisk} medium`,
-            color: "text-amber-400",
+            label: "TEAM MEMBERS",
+            value: TEAM.length.toString(),
+            valueColor: "#f0ede8",
           },
           {
-            label: "Avg Health Score",
+            label: "BURNOUT RISK",
+            value: `${highRisk} high · ${medRisk} med`,
+            valueColor: "#f97316",
+          },
+          {
+            label: "AVG HEALTH",
             value: `${Math.round(
               TEAM.reduce((a, t) => a + t.score, 0) / TEAM.length
             )}`,
-            color: "text-emerald-400",
+            valueColor: "#34d399",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="rounded-2xl bg-white/[0.04] border border-white/[0.07] px-5 py-4"
+            className="rounded border px-5 py-4"
+            style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
           >
-            <p className="text-xs text-slate-500">{s.label}</p>
-            <p className={`mt-1 text-xl font-bold ${s.color}`}>{s.value}</p>
+            <p
+              className="text-[9px] mb-2"
+              style={{
+                color: "#3a3a3f",
+                fontFamily: "var(--font-jetbrains-mono)",
+                letterSpacing: "0.12em",
+              }}
+            >
+              {s.label}
+            </p>
+            <p
+              className="text-xl font-medium tabular-nums"
+              style={{
+                fontFamily: "var(--font-jetbrains-mono)",
+                color: s.valueColor,
+              }}
+            >
+              {s.value}
+            </p>
           </div>
         ))}
       </div>
@@ -117,67 +168,137 @@ export default function TeamsPage() {
           return (
             <div
               key={member.name}
-              className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-5"
+              className="rounded border p-5 transition-colors"
+              style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.borderColor = cfg.hoverBorder)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.borderColor = "#1c1c20")
+              }
             >
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-bold text-indigo-300">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded text-sm font-bold"
+                    style={{
+                      backgroundColor: cfg.avatarBg,
+                      color: cfg.avatarText,
+                      fontFamily: "var(--font-jetbrains-mono)",
+                    }}
+                  >
                     {member.avatar}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">
+                    <p
+                      className="text-sm font-bold"
+                      style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+                    >
                       {member.name}
                     </p>
-                    <p className="text-xs text-slate-500">{member.role}</p>
+                    <p
+                      className="text-xs"
+                      style={{ color: "#6b6b70" }}
+                    >
+                      {member.role}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-24">
                     <div className="flex justify-between mb-1">
-                      <span className="text-[10px] text-slate-600">Health</span>
-                      <span className="text-[10px] text-slate-400 font-medium">
+                      <span
+                        className="text-[9px]"
+                        style={{
+                          color: "#3a3a3f",
+                          fontFamily: "var(--font-jetbrains-mono)",
+                        }}
+                      >
+                        HEALTH
+                      </span>
+                      <span
+                        className="text-[9px]"
+                        style={{
+                          color: "#6b6b70",
+                          fontFamily: "var(--font-jetbrains-mono)",
+                        }}
+                      >
                         {member.score}
                       </span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-white/[0.08]">
+                    <div
+                      className="h-1 rounded-full"
+                      style={{ backgroundColor: "#1c1c20" }}
+                    >
                       <div
-                        className={`h-full rounded-full ${cfg.bar}`}
-                        style={{ width: `${member.score}%` }}
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${member.score}%`,
+                          backgroundColor: cfg.barColor,
+                        }}
                       />
                     </div>
                   </div>
                   <span
-                    className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${cfg.badge}`}
+                    className="rounded border px-2.5 py-0.5 text-[9px] font-medium"
+                    style={{
+                      backgroundColor: cfg.badgeBg,
+                      borderColor: cfg.badgeBorder,
+                      color: cfg.badgeText,
+                      fontFamily: "var(--font-jetbrains-mono)",
+                    }}
                   >
-                    {cfg.label}
+                    {cfg.label.toUpperCase()}
                   </span>
                 </div>
               </div>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 mb-2">
-                    Signals
+                  <p
+                    className="text-[9px] mb-2"
+                    style={{
+                      color: "#3a3a3f",
+                      fontFamily: "var(--font-jetbrains-mono)",
+                      letterSpacing: "0.12em",
+                    }}
+                  >
+                    // SIGNALS
                   </p>
                   <ul className="space-y-1">
                     {member.signals.map((s) => (
                       <li
                         key={s}
-                        className="flex items-center gap-2 text-xs text-slate-400"
+                        className="flex items-center gap-2 text-xs"
+                        style={{ color: "#6b6b70" }}
                       >
                         <span
-                          className={`h-1.5 w-1.5 shrink-0 rounded-full ${cfg.dot}`}
+                          className="h-1.5 w-1.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: cfg.dotColor }}
                         />
                         {s}
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="rounded-xl bg-white/[0.03] border border-white/[0.05] px-4 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 mb-1.5">
-                    Coaching Recommendation
+                <div
+                  className="rounded border px-4 py-3"
+                  style={{ backgroundColor: "#07070a", borderColor: "#1c1c20" }}
+                >
+                  <p
+                    className="text-[9px] mb-1.5"
+                    style={{
+                      color: "#3a3a3f",
+                      fontFamily: "var(--font-jetbrains-mono)",
+                      letterSpacing: "0.12em",
+                    }}
+                  >
+                    // COACHING REC
                   </p>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p
+                    className="text-xs leading-relaxed"
+                    style={{ color: "#6b6b70" }}
+                  >
                     {member.coaching}
                   </p>
                 </div>
