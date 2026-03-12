@@ -1,6 +1,8 @@
 import { getNudges } from "@/lib/db/nudge-actions";
 import { NudgeList } from "@/components/nudges/nudge-list";
 
+export const dynamic = "force-dynamic";
+
 export default async function NudgesPage() {
   const nudges = await getNudges();
   const pendingCount = nudges.filter((n) => n.status === "PENDING").length;
