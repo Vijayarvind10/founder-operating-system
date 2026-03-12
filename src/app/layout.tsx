@@ -3,6 +3,13 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AgentStatusProvider, SystemStatus } from "@/components/agent-status";
 import { DemoModeBadge } from "@/components/demo-mode-badge";
+import {
+  BrainCircuit,
+  LayoutDashboard,
+  Plug,
+  Users,
+  Bell,
+} from "lucide-react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +23,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Founder Operating System",
-  description: "AI operating system for founders",
+  title: "Cortex AI — AI Command Center for Founders",
+  description:
+    "Three AI agents monitoring your company health, coaching your team, and drafting communications — 24/7.",
 };
+
+const navItems = [
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/connections", label: "Connections", icon: Plug },
+  { href: "/teams", label: "Teams", icon: Users },
+  { href: "/nudges", label: "Nudges", icon: Bell },
+];
 
 export default function RootLayout({
   children,
@@ -32,44 +47,57 @@ export default function RootLayout({
       >
         <AgentStatusProvider>
           <div className="flex min-h-screen bg-slate-50 text-slate-900">
-            <aside className="flex w-64 flex-col border-r border-slate-200 bg-white px-6 py-8">
-              <div className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Founder OS
+            {/* Sidebar */}
+            <aside className="flex w-64 flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 px-5 py-8 text-white shrink-0">
+              {/* Logo */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/30">
+                  <BrainCircuit className="h-5 w-5 text-indigo-300" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold tracking-tight text-white">
+                    Cortex AI
+                  </div>
+                  <div className="text-[10px] leading-none mt-0.5 text-indigo-300/70">
+                    AI Command Center
+                  </div>
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-semibold text-slate-900">
-                Control Center
+
+              {/* Agent status pill */}
+              <div className="mt-5 flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 ring-1 ring-white/10">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                <span className="text-xs text-slate-300">3 agents active</span>
               </div>
-              <nav className="mt-10 flex flex-col gap-2 text-sm font-medium">
-                <Link
-                  href="/"
-                  className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/connections"
-                  className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  Connections
-                </Link>
-                <Link
-                  href="/teams"
-                  className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  Teams
-                </Link>
-                <Link
-                  href="/nudges"
-                  className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  Nudges
-                </Link>
+
+              {/* Nav */}
+              <nav className="mt-8 flex flex-col gap-1 text-sm font-medium">
+                {navItems.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors duration-150"
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {label}
+                  </Link>
+                ))}
               </nav>
-              <div className="mt-auto pt-10">
+
+              {/* Footer */}
+              <div className="mt-auto pt-8 flex flex-col gap-3">
                 <DemoModeBadge />
+                <p className="text-[10px] text-slate-600 leading-relaxed">
+                  Company Health · People Coach · Nudging
+                </p>
               </div>
             </aside>
-            <div className="flex flex-1 flex-col">
+
+            {/* Main content */}
+            <div className="flex flex-1 flex-col min-w-0">
               <main className="flex-1 px-10 py-10">{children}</main>
               <footer className="border-t border-slate-200 bg-white px-10 py-4">
                 <SystemStatus />
