@@ -90,15 +90,6 @@
   }
 }
 
-.nav-link {
-  color: #6b6b70;
-  transition: color 0.15s, background-color 0.15s;
-}
-.nav-link:hover {
-  color: #f0ede8;
-  background-color: #1c1c20;
-}
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Syne, JetBrains_Mono, Geist } from "next/font/google";
 import { AgentStatusProvider, SystemStatus } from "@/components/agent-status";
 import { DemoModeBadge } from "@/components/demo-mode-badge";
-import {
-  Terminal,
-  LayoutDashboard,
-  Plug,
-  Users,
-  Bell,
-  MessageCircle,
-} from "lucide-react";
+import { NavLinks } from "@/components/nav-links";
+import { Terminal } from "lucide-react";
 import "./globals.css";
 
 const syne = Syne({
@@ -30,14 +23,6 @@ export const metadata: Metadata = {
   description:
     "Three AI agents monitoring your company health, coaching your team, and drafting communications — 24/7.",
 };
-
-const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/chat", label: "Ask AI", icon: MessageCircle },
-  { href: "/connections", label: "Connections", icon: Plug },
-  { href: "/teams", label: "Teams", icon: Users },
-  { href: "/nudges", label: "Nudges", icon: Bell },
-];
 
 export default function RootLayout({
   children,
@@ -116,22 +101,7 @@ export default function RootLayout({
               </div>
 
               {/* Nav */}
-              <nav className="flex flex-col gap-0.5">
-                {navItems.map(({ href, label, icon: Icon }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="nav-link group flex items-center gap-2.5 rounded px-2.5 py-2 text-sm"
-                    style={{
-                      fontFamily: "var(--font-syne)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
-                    {label}
-                  </Link>
-                ))}
-              </nav>
+              <NavLinks />
 
               <div className="mt-auto pt-6 flex flex-col gap-3 px-2">
                 <DemoModeBadge />

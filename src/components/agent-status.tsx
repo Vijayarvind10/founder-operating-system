@@ -53,15 +53,31 @@ export function useAgentStatus() {
 
 export function SystemStatus() {
   const { lastOperation } = useAgentStatus()
+  const hasRun = lastOperation.latencyMs > 0
   return (
     <div
-      className="flex items-center gap-4 text-[10px]"
+      className="flex items-center gap-0 text-[10px]"
       style={{ fontFamily: "var(--font-jetbrains-mono)", color: "#3a3a3f" }}
     >
-      <span style={{ color: "#6b6b70" }}>SYS</span>
-      <span>LAT: {lastOperation.latencyMs}ms</span>
-      <span>COST: ${lastOperation.costUsd.toFixed(3)}</span>
-      <span>{lastOperation.updatedAt}</span>
+      <span style={{ color: hasRun ? "#6b6b70" : "#3a3a3f" }}>SYS</span>
+      <span className="mx-3" style={{ color: "#1c1c20" }}>|</span>
+      <span>
+        LAT{" "}
+        <span style={{ color: hasRun ? "#f0ede8" : "#3a3a3f" }}>
+          {lastOperation.latencyMs}ms
+        </span>
+      </span>
+      <span className="mx-3" style={{ color: "#1c1c20" }}>|</span>
+      <span>
+        COST{" "}
+        <span style={{ color: hasRun ? "#f0ede8" : "#3a3a3f" }}>
+          ${lastOperation.costUsd.toFixed(3)}
+        </span>
+      </span>
+      <span className="mx-3" style={{ color: "#1c1c20" }}>|</span>
+      <span style={{ color: hasRun ? "#6b6b70" : "#2a2a30" }}>
+        {lastOperation.updatedAt}
+      </span>
     </div>
   )
 }

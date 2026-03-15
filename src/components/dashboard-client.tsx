@@ -278,13 +278,15 @@ export default function DashboardClient({
           const Icon = METRIC_ICONS[i % METRIC_ICONS.length]
           const isUp = metric.trend === "up"
           const isDown = metric.trend === "down"
+          const accentColor = isUp ? "#f59e0b" : isDown ? "#f87171" : "#2a2a30"
           return (
             <div
               key={metric.label}
-              className="animate-fade-up rounded border p-5"
+              className="animate-fade-up rounded p-5"
               style={{
                 backgroundColor: "#0f0f12",
-                borderColor: "#1c1c20",
+                border: "1px solid #1c1c20",
+                borderLeft: `2px solid ${accentColor}`,
                 animationDelay: `${150 + i * 60}ms`,
               }}
             >

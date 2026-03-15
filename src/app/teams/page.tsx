@@ -119,11 +119,13 @@ export default function TeamsPage() {
             label: "TEAM MEMBERS",
             value: TEAM.length.toString(),
             valueColor: "#f0ede8",
+            accent: "#2a2a30",
           },
           {
             label: "BURNOUT RISK",
             value: `${highRisk} high · ${medRisk} med`,
             valueColor: "#f97316",
+            accent: "#f97316",
           },
           {
             label: "AVG HEALTH",
@@ -131,12 +133,18 @@ export default function TeamsPage() {
               TEAM.reduce((a, t) => a + t.score, 0) / TEAM.length
             )}`,
             valueColor: "#34d399",
+            accent: "#34d399",
           },
-        ].map((s) => (
+        ].map((s, i) => (
           <div
             key={s.label}
-            className="rounded border px-5 py-4"
-            style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+            className="animate-fade-up rounded p-5"
+            style={{
+              backgroundColor: "#0f0f12",
+              border: "1px solid #1c1c20",
+              borderLeft: `2px solid ${s.accent}`,
+              animationDelay: `${i * 60}ms`,
+            }}
           >
             <p
               className="text-[9px] mb-2"
@@ -163,19 +171,25 @@ export default function TeamsPage() {
 
       {/* Team cards */}
       <div className="flex flex-col gap-4">
-        {TEAM.map((member) => {
+        {TEAM.map((member, i) => {
           const cfg = RISK_CONFIG[member.risk as keyof typeof RISK_CONFIG]
           return (
             <div
               key={member.name}
-              className="rounded border p-5 transition-colors"
-              style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+              className="animate-fade-up rounded p-5 transition-colors"
+              style={{
+                backgroundColor: "#0f0f12",
+                border: "1px solid #1c1c20",
+                borderLeft: `2px solid ${cfg.barColor}`,
+                animationDelay: `${180 + i * 70}ms`,
+              }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.borderColor = cfg.hoverBorder)
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.borderColor = "#1c1c20")
-              }
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#1c1c20"
+                e.currentTarget.style.borderLeftColor = cfg.barColor
+              }}
             >
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
@@ -227,11 +241,11 @@ export default function TeamsPage() {
                       </span>
                     </div>
                     <div
-                      className="h-1 rounded-full"
+                      className="h-1.5 rounded-full"
                       style={{ backgroundColor: "#1c1c20" }}
                     >
                       <div
-                        className="h-full rounded-full"
+                        className="h-full rounded-full transition-all"
                         style={{
                           width: `${member.score}%`,
                           backgroundColor: cfg.barColor,

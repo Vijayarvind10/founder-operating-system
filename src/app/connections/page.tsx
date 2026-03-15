@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckCircle2, Circle, Github, Zap, BarChart3, MessageSquare } from "lucide-react"
+import { Circle, Github, Zap, BarChart3, MessageSquare } from "lucide-react"
 
 const CONNECTIONS = [
   {
@@ -63,14 +63,26 @@ export default function ConnectionsPage() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {CONNECTIONS.map((conn) => {
+        {CONNECTIONS.map((conn, i) => {
           const Icon = conn.icon
           const connected = conn.status === "connected"
           return (
             <div
               key={conn.name}
-              className="rounded border p-5"
-              style={{ backgroundColor: "#0f0f12", borderColor: "#1c1c20" }}
+              className="animate-fade-up rounded border p-5 transition-colors"
+              style={{
+                backgroundColor: "#0f0f12",
+                borderColor: "#1c1c20",
+                animationDelay: `${i * 80}ms`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = connected
+                  ? "#065f46"
+                  : "#92400e"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#1c1c20"
+              }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -93,13 +105,19 @@ export default function ConnectionsPage() {
                   </div>
                 </div>
                 {connected ? (
-                  <CheckCircle2
-                    className="h-5 w-5 shrink-0"
-                    style={{ color: "#34d399" }}
-                  />
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span
+                      className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                      style={{ backgroundColor: "#34d399" }}
+                    />
+                    <span
+                      className="relative inline-flex h-2 w-2 rounded-full"
+                      style={{ backgroundColor: "#34d399" }}
+                    />
+                  </span>
                 ) : (
                   <Circle
-                    className="h-5 w-5 shrink-0"
+                    className="h-4 w-4 shrink-0"
                     style={{ color: "#3a3a3f" }}
                   />
                 )}

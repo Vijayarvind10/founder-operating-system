@@ -8,11 +8,23 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col gap-4">
       <header>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-600">
-          Agent Interface
+        <p
+          className="text-[10px] mb-1.5"
+          style={{
+            color: "#3a3a3f",
+            fontFamily: "var(--font-jetbrains-mono)",
+            letterSpacing: "0.15em",
+          }}
+        >
+          // AGENT INTERFACE
         </p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Ask AI</h1>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <h1
+          className="text-3xl font-bold"
+          style={{ fontFamily: "var(--font-syne)", color: "#f0ede8" }}
+        >
+          Ask AI
+        </h1>
+        <p className="mt-1.5 text-sm" style={{ color: "#6b6b70" }}>
           Query your three AI agents directly. Company health, people coaching,
           and outreach drafting.
         </p>
