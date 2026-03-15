@@ -16,7 +16,7 @@ export default function ChatPage() {
             letterSpacing: "0.15em",
           }}
         >
-          // AGENT INTERFACE
+          {"// AGENT INTERFACE"}
         </p>
         <h1
           className="text-3xl font-bold"

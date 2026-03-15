@@ -49,7 +49,7 @@ export default function ConnectionsPage() {
             letterSpacing: "0.15em",
           }}
         >
-          // INTEGRATIONS
+          {"// INTEGRATIONS"}
         </p>
         <h1
           className="text-3xl font-bold"

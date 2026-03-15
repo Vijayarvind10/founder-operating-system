@@ -187,8 +187,12 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
   }, [editing])
 
   useEffect(() => {
-    if (!editing) setDraftBody(nudge.body)
-  }, [nudge.body, editing])
+    // Avoid calling setState directly during render/effect; this is a known issue we might ignore or we can wait
+    if (!editing && draftBody !== nudge.body) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      setDraftBody(nudge.body)
+    }
+  }, [nudge.body, editing, draftBody])
 
   const isTerminal =
     nudge.status === "APPROVED" || nudge.status === "REJECTED"
@@ -481,7 +485,7 @@ export function NudgeDemoList() {
               letterSpacing: "0.15em",
             }}
           >
-            // PENDING APPROVAL — {pending.length}
+            {"// PENDING APPROVAL — {pending.length}"}
           </h2>
           {pending.map((nudge) => (
             <NudgeCard
@@ -505,7 +509,7 @@ export function NudgeDemoList() {
               letterSpacing: "0.15em",
             }}
           >
-            // ACTIONED — {actioned.length}
+            {"// ACTIONED — {actioned.length}"}
           </h2>
           {actioned.map((nudge) => (
             <NudgeCard

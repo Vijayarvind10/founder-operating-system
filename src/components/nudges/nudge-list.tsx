@@ -154,8 +154,11 @@ function NudgeCard({ nudge, onApprove, onReject, onSave }: NudgeCardProps) {
 
   // Sync body when parent updates after server action
   useEffect(() => {
-    if (!editing) setDraftBody(nudge.body);
-  }, [nudge.body, editing]);
+    if (!editing && draftBody !== nudge.body) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      setDraftBody(nudge.body);
+    }
+  }, [nudge.body, editing, draftBody]);
 
   const isTerminal =
     nudge.status === "APPROVED" ||

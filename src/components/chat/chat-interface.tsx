@@ -173,6 +173,7 @@ function ToolCallBlock({ tc, visible }: { tc: ToolCall; visible: boolean }) {
     >
       <button
         onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
         className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors"
         style={{ color: "#6b6b70" }}
         onMouseEnter={(e) =>
@@ -485,6 +486,7 @@ export function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about revenue, team health, or draft a message…"
+            aria-label="Chat input"
             className="flex-1 bg-transparent text-sm outline-none"
             style={{
               color: "#f0ede8",
@@ -493,6 +495,7 @@ export function ChatInterface() {
           />
           <button
             type="submit"
+            aria-label="Send message"
             disabled={!input.trim() || isProcessing}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             style={{ backgroundColor: "#f59e0b" }}

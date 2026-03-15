@@ -8,6 +8,7 @@ let _client: import("langsmith").Client | null = null;
 function getClient(): import("langsmith").Client | null {
   if (!process.env.LANGSMITH_API_KEY) return null;
   if (!_client) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Client } = require("langsmith") as typeof import("langsmith");
     _client = new Client({
       apiUrl:

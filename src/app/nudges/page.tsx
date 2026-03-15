@@ -17,7 +17,7 @@ export default async function NudgesPage() {
               letterSpacing: "0.15em",
             }}
           >
-            // NUDGING AGENT
+            {"// NUDGING AGENT"}
           </p>
           <h1
             className="text-3xl font-bold"
@@ -53,7 +53,7 @@ export default async function NudgesPage() {
             letterSpacing: "0.15em",
           }}
         >
-          // NUDGING AGENT
+          {"// NUDGING AGENT"}
         </p>
         <h1
           className="text-3xl font-bold"

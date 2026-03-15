@@ -106,7 +106,7 @@ export default function DashboardClient({
                   letterSpacing: "0.15em",
                 }}
               >
-                // WHAT THIS DOES
+                {"// WHAT THIS DOES"}
               </p>
               <h2
                 className="text-xl font-bold"
@@ -188,7 +188,7 @@ export default function DashboardClient({
               letterSpacing: "0.15em",
             }}
           >
-            // COMPANY HEALTH
+            {"// COMPANY HEALTH"}
           </p>
           <h1
             className="text-3xl font-bold"
@@ -348,7 +348,7 @@ export default function DashboardClient({
                   letterSpacing: "0.12em",
                 }}
               >
-                // AI DAILY BRIEFING
+                {"// AI DAILY BRIEFING"}
               </p>
               <h3
                 className="text-sm font-bold"
@@ -385,7 +385,7 @@ export default function DashboardClient({
                 letterSpacing: "0.12em",
               }}
             >
-              // PRIORITY ACTIONS
+              {"// PRIORITY ACTIONS"}
             </p>
             <ul className="space-y-3">
               {deferred.briefing.priorities.map((item, i) => (
@@ -426,7 +426,7 @@ export default function DashboardClient({
                 letterSpacing: "0.12em",
               }}
             >
-              // ACTIVE ALERTS
+              {"// ACTIVE ALERTS"}
             </p>
           </div>
           <div className="space-y-2.5">
