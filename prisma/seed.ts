@@ -6,6 +6,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 const pool = new Pool({ connectionString: process.env["DATABASE_URL"] });
+// @ts-expect-error - PrismaPg expects a different Pool type from pg but they are compatible
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 

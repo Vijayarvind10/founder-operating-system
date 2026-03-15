@@ -1,0 +1,3 @@
+## 2024-03-24 - Accessibility improvements for custom interactive components
+**Learning:** In the chat interface (`src/components/chat/chat-interface.tsx`), custom collapsible elements built with `<button>` lacked `aria-expanded` attributes, making their state opaque to screen readers. Also, several icon-only buttons lacked `aria-label`s.
+**Action:** Always ensure custom interactive components (like toggles/accordions) provide the correct ARIA state attributes (e.g. `aria-expanded`), and that all icon-only buttons and form inputs include `aria-label`s.

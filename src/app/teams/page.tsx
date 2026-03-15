@@ -99,7 +99,7 @@ export default function TeamsPage() {
             letterSpacing: "0.15em",
           }}
         >
-          // PEOPLE COACH AGENT
+          {"// PEOPLE COACH AGENT"}
         </p>
         <h1
           className="text-3xl font-bold"
@@ -277,7 +277,7 @@ export default function TeamsPage() {
                       letterSpacing: "0.12em",
                     }}
                   >
-                    // SIGNALS
+                    {"// SIGNALS"}
                   </p>
                   <ul className="space-y-1">
                     {member.signals.map((s) => (
@@ -307,7 +307,7 @@ export default function TeamsPage() {
                       letterSpacing: "0.12em",
                     }}
                   >
-                    // COACHING REC
+                    {"// COACHING REC"}
                   </p>
                   <p
                     className="text-xs leading-relaxed"
