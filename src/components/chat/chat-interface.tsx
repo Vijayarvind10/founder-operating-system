@@ -9,6 +9,7 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronRight,
+  HelpCircle
 } from "lucide-react"
 
 type Phase = "idle" | "thinking" | "streaming" | "done"
@@ -27,57 +28,123 @@ type Script = {
   response: string
 }
 
-const SCRIPTS: Record<string, Script> = {
-  revenue: {
-    agent: "Company Health Agent",
-    agentColor: "#f59e0b",
-    agentIcon: ActivitySquare,
-    toolCalls: [
-      {
-        name: "getAnalyticsReport()",
-        desc: "Fetching 90-day revenue and churn data",
-        result: "✓ Loaded — MRR $118.4k, 2 churn-risk accounts flagged",
-      },
-      {
-        name: "getSalesReport()",
-        desc: "Pulling late-stage pipeline data",
-        result: "✓ Loaded — $290k pipeline, 3 deals in final stage",
-      },
-    ],
-    response: `Based on current signals, your biggest revenue risk this quarter is concentrated in two mid-market accounts — Acme Corp and Northwind Inc — both showing 34% usage decline over the past 14 days with no recent support contact.\n\nYour sales pipeline is healthy at $290k with three late-stage deals, but two of those renewals depend on a feature parity milestone you haven't shipped yet.\n\nRecommended actions:\n• Schedule a QBR with Acme Corp this week — usage decline at this stage typically precedes churn by 3–4 weeks\n• Unblock the feature parity sprint — two $60k renewals are gating on it\n• Assign a CSM to Northwind for a proactive health check call`,
-  },
-  team: {
-    agent: "People Coach Agent",
-    agentColor: "#34d399",
-    agentIcon: HeartPulse,
-    toolCalls: [
-      {
-        name: "getHRReport()",
-        desc: "Analysing team health signals and engagement scores",
-        result: "✓ Loaded — 8 employees, 1 high-risk flag, 2 moderate",
-      },
-    ],
-    response: `The People Coach Agent has identified one high-risk burnout signal and two moderate flags in your team.\n\nHigh risk — Sarah Chen (Engineering Lead)\nOvertime hours up 40% for 3 consecutive weeks, 0 PTO taken in 6 weeks, and PR review response time has slowed significantly. Pattern matches pre-burnout profile with 87% confidence.\n\nModerate risk — Marcus Rivera & Priya Patel\nBoth show reduced async communication volume and missed two 1:1s this month.\n\nRecommended coaching actions:\n• Block a 1:1 with Sarah this week — acknowledge the load, not the output\n• Offer Marcus and Priya flexible sprint scope next cycle\n• Consider a team retrospective focused on sustainable pace`,
-  },
-  nudge: {
-    agent: "Nudging Agent",
-    agentColor: "#f97316",
-    agentIcon: MessageSquare,
-    toolCalls: [
-      {
-        name: "getHRReport()",
-        desc: "Looking up recipient context and relationship signals",
-        result:
-          "✓ Loaded — last contact 18 days ago, account health: at-risk",
-      },
-      {
-        name: "scheduleNudge()",
-        desc: "Drafting personalised message and queuing for approval",
-        result: "✓ Draft created — awaiting founder approval before send",
-      },
-    ],
-    response: `I've drafted a check-in message for the Acme Corp account. It will not be sent until you approve it.\n\n────────────────────\nSubject: Checking in — how's everything going?\n\nHi Jordan,\n\nI wanted to reach out personally — I noticed your team's usage has been lighter than usual over the past couple of weeks, and I want to make sure we're delivering the value you expected.\n\nWould you have 20 minutes this week or next for a quick call? I'd love to hear what's working and where we can do better for you.\n\nLooking forward to connecting.\n────────────────────\n\nThis draft is queued in the Nudges tab for your review. You can edit the copy, change the channel (Email / Slack), or reject it entirely.`,
-  },
+function extractEntities(query: string): string[] {
+  const words = query.split(/\s+/)
+  const ignore = new Set([
+    "What", "How", "Is", "Draft", "The", "A", "An", "Can", "Could", "Would",
+    "Please", "Do", "Are", "I", "We", "They", "He", "She", "It", "Who", "Where",
+    "When", "Why", "In", "On", "At", "To", "For", "With", "About", "Against",
+    "Between", "Into", "Through", "During", "Before", "After", "Above", "Below",
+    "From", "Up", "Down", "Out", "Off", "Over", "Under", "Again", "Further",
+    "Then", "Once", "Check", "Message", "Account", "Company", "People", "Team",
+    "Revenue", "Risk", "Quarter", "Month", "Year", "Burnout", "Signs", "Anyone",
+    "Any", "Someone", "My", "Your", "His", "Her", "Their", "Our", "Whats", "Whos",
+    "Create", "Make", "Send", "Tell", "Show", "Give"
+  ])
+
+  const entities = []
+  for (let i = 0; i < words.length; i++) {
+    // Strip punctuation
+    const cleanWord = words[i].replace(/[^a-zA-Z]/g, '')
+    // Must start with uppercase and have lowercase letters
+    if (cleanWord.match(/^[A-Z][a-z]+$/) && !ignore.has(cleanWord)) {
+      entities.push(cleanWord)
+    }
+  }
+  return [...new Set(entities)]
+}
+
+function generateScript(query: string): Script {
+  const q = query.toLowerCase()
+  const entities = extractEntities(query)
+  const targetEntity = entities.length > 0 ? entities.join(" ") : null
+
+  const isRevenue = q.includes("revenue") || q.includes("risk") || q.includes("churn") || q.includes("sales") || q.includes("mrr")
+  const isTeam = q.includes("team") || q.includes("burn") || q.includes("people") || q.includes("health") || q.includes("doing") || q.includes("employee") || q.includes("pto")
+  const isNudge = q.includes("draft") || q.includes("message") || q.includes("nudge") || q.includes("email") || q.includes("reach") || q.includes("contact")
+
+  // Randomize greetings for varied responses
+  const greetings = [
+    "Here's what I found:",
+    "Based on current signals:",
+    "Looking at the latest data:",
+    "I've analysed the current state:"
+  ]
+  const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)]
+
+  if (isRevenue) {
+    const company = targetEntity || "Acme Corp and Northwind Inc"
+    return {
+      agent: "Company Health Agent",
+      agentColor: "#f59e0b",
+      agentIcon: ActivitySquare,
+      toolCalls: [
+        {
+          name: `getAnalyticsReport(${targetEntity ? `{ company: "${targetEntity}" }` : ""})`,
+          desc: "Fetching 90-day revenue and churn data",
+          result: `✓ Loaded — MRR $118.4k, ${targetEntity ? "usage decline flagged" : "2 churn-risk accounts flagged"}`,
+        },
+        {
+          name: "getSalesReport()",
+          desc: "Pulling late-stage pipeline data",
+          result: "✓ Loaded — $290k pipeline, 3 deals in final stage",
+        },
+      ],
+      response: `${randomGreeting} your biggest revenue risk this quarter is concentrated in ${company} — showing significant usage decline over the past 14 days with no recent support contact.\n\nYour sales pipeline is healthy at $290k with three late-stage deals, but two of those renewals depend on a feature parity milestone you haven't shipped yet.\n\nRecommended actions:\n• Schedule a QBR with ${targetEntity || "Acme Corp"} this week — usage decline at this stage typically precedes churn by 3–4 weeks\n• Unblock the feature parity sprint — two $60k renewals are gating on it\n• Assign a CSM for a proactive health check call`,
+    }
+  }
+
+  if (isTeam || (!isRevenue && !isNudge && entities.length > 0 && q.includes("how is"))) {
+    const person = targetEntity || "Sarah Chen (Engineering Lead)"
+    const firstName = targetEntity ? targetEntity.split(" ")[0] : "Sarah"
+    return {
+      agent: "People Coach Agent",
+      agentColor: "#34d399",
+      agentIcon: HeartPulse,
+      toolCalls: [
+        {
+          name: `getHRReport(${targetEntity ? `{ employee: "${targetEntity}" }` : ""})`,
+          desc: "Analysing team health signals and engagement scores",
+          result: targetEntity ? `✓ Loaded — ${targetEntity} profile, high-risk flag` : "✓ Loaded — 8 employees, 1 high-risk flag, 2 moderate",
+        },
+      ],
+      response: `The People Coach Agent has reviewed the signals.\n\nHigh risk — ${person}\nOvertime hours up 40% for 3 consecutive weeks, 0 PTO taken in 6 weeks, and PR review response time has slowed significantly. Pattern matches pre-burnout profile with 87% confidence.\n\n${!targetEntity ? "Moderate risk — Marcus Rivera & Priya Patel\nBoth show reduced async communication volume and missed two 1:1s this month.\n\n" : ""}Recommended coaching actions:\n• Block a 1:1 with ${firstName} this week — acknowledge the load, not the output\n• Consider a team retrospective focused on sustainable pace`,
+    }
+  }
+
+  if (isNudge) {
+    const recipient = targetEntity || "Acme Corp"
+    const isPerson = recipient.split(" ").length === 1 && !recipient.toLowerCase().includes("corp") && !recipient.toLowerCase().includes("inc") // Rough heuristic
+    const greetingName = isPerson ? recipient : "Jordan"
+
+    return {
+      agent: "Nudging Agent",
+      agentColor: "#f97316",
+      agentIcon: MessageSquare,
+      toolCalls: [
+        {
+          name: `getContextReport({ target: "${recipient}" })`,
+          desc: "Looking up recipient context and relationship signals",
+          result: "✓ Loaded — last contact 18 days ago, account health: at-risk",
+        },
+        {
+          name: "scheduleNudge()",
+          desc: "Drafting personalised message and queuing for approval",
+          result: "✓ Draft created — awaiting founder approval before send",
+        },
+      ],
+      response: `I've drafted a check-in message for ${recipient}. It will not be sent until you approve it.\n\n────────────────────\nSubject: Checking in — how's everything going?\n\nHi ${greetingName},\n\nI wanted to reach out personally — I noticed your team's usage has been lighter than usual over the past couple of weeks, and I want to make sure we're delivering the value you expected.\n\nWould you have 20 minutes this week or next for a quick call? I'd love to hear what's working and where we can do better for you.\n\nLooking forward to connecting.\n────────────────────\n\nThis draft is queued in the Nudges tab for your review. You can edit the copy, change the channel (Email / Slack), or reject it entirely.`,
+    }
+  }
+
+  // Fallback Assistant if intent isn't understood
+  return {
+    agent: "System Assistant",
+    agentColor: "#3b82f6",
+    agentIcon: HelpCircle,
+    toolCalls: [],
+    response: `I'm not entirely sure how to help with that based on your input.\n\nI can assist you with:\n• **Company Health:** Ask about revenue risks, churn, or sales pipeline.\n• **People Coaching:** Ask about team health or specific employees who might be at risk of burnout.\n• **Nudging:** Ask me to draft a check-in message or email for an account or person.\n\nTry asking: "What's the biggest risk to revenue?" or "Draft a message for ${targetEntity || 'Northwind'}."`,
+  }
 }
 
 const SUGGESTIONS = [
@@ -85,26 +152,6 @@ const SUGGESTIONS = [
   "Is anyone on the team showing signs of burnout?",
   "Draft a check-in message for the Acme Corp account",
 ]
-
-function pickScript(query: string): Script {
-  const q = query.toLowerCase()
-  if (
-    q.includes("revenue") ||
-    q.includes("risk") ||
-    q.includes("churn") ||
-    q.includes("sales")
-  )
-    return SCRIPTS.revenue
-  if (
-    q.includes("team") ||
-    q.includes("burn") ||
-    q.includes("people") ||
-    q.includes("sarah") ||
-    q.includes("health")
-  )
-    return SCRIPTS.team
-  return SCRIPTS.nudge
-}
 
 type Message =
   | { role: "user"; text: string }
@@ -185,7 +232,7 @@ export function ChatInterface() {
       setIsProcessing(true)
       setInput("")
 
-      const script = pickScript(query)
+      const script = generateScript(query)
       const userMsg: Message = { role: "user", text: query }
       const aiMsg: Message = {
         role: "ai",
@@ -268,7 +315,7 @@ export function ChatInterface() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)]">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto space-y-6 pb-4">
+      <div className="flex-1 overflow-y-auto space-y-6 pb-4 pr-2" style={{ scrollbarWidth: "thin", scrollbarColor: "#1c1c20 transparent" }}>
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-8 text-center">
             <div>
@@ -399,7 +446,13 @@ export function ChatInterface() {
                         color: "#6b6b70",
                       }}
                     >
-                      {streamedText}
+                      {/* Bold some text like **Company Health:** */}
+                      {streamedText.split(/(\*\*.*?\*\*)/).map((part, index) => {
+                        if (part.startsWith('**') && part.endsWith('**')) {
+                          return <strong key={index} style={{ color: '#f0ede8' }}>{part.slice(2, -2)}</strong>;
+                        }
+                        return part;
+                      })}
                       {phase === "streaming" && (
                         <span
                           className="inline-block h-3.5 w-0.5 ml-0.5 animate-pulse"
